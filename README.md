@@ -1,3 +1,5 @@
+# WARNING! This projects is still in WIP state, incomplete and untested!
+
 # The Bouncy Castle Cryptography Library For .NET
 [![NuGet](https://img.shields.io/nuget/dt/BouncyCastle.Cryptography.svg)](https://www.nuget.org/packages/BouncyCastle.Cryptography) [![NuGet](https://img.shields.io/nuget/vpre/BouncyCastle.Cryptography.svg)](https://www.nuget.org/packages/BouncyCastle.Cryptography)
 
