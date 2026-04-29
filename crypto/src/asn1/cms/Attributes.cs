@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Org.BouncyCastle.Asn1.Cms
 {
@@ -50,7 +51,12 @@ namespace Org.BouncyCastle.Asn1.Cms
 
         public Attributes(IReadOnlyCollection<Attribute> attributes)
         {
+#if NET35
+            IReadOnlyCollection<Asn1Encodable> tmp_attributes = new ListEx<Asn1Encodable>(attributes.Select(attrib => attrib as Asn1Encodable));
+            m_attributes = BerSet.FromCollection(tmp_attributes);
+#else
             m_attributes = BerSet.FromCollection(attributes);
+#endif
         }
 
         public Asn1Set AttributeSet => m_attributes;

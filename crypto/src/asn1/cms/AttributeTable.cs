@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Org.BouncyCastle.Asn1.Cms
 {
@@ -22,7 +23,12 @@ namespace Org.BouncyCastle.Asn1.Cms
 
         public AttributeTable(IReadOnlyCollection<Attribute> attributes)
         {
+#if NET35
+            IReadOnlyCollection<Asn1Encodable> tmp_attributes = new ListEx<Asn1Encodable>(attributes.Select(attrib => attrib as Asn1Encodable));
+            m_attributes = BuildAttributes(tmp_attributes, out m_count);
+#else
             m_attributes = BuildAttributes(attributes, out m_count);
+#endif
         }
 
         public AttributeTable(Asn1Set s)
@@ -82,7 +88,14 @@ namespace Org.BouncyCastle.Asn1.Cms
                 return new Asn1EncodableVector(0);
 
             if (existingValue is List<Attribute> existingList)
+#if NET35
+            {
+                IReadOnlyCollection<Asn1Encodable> tmp_existingList = new ListEx<Asn1Encodable>(existingList.Select(a => a as Asn1Encodable));
+                return Asn1EncodableVector.FromCollection(tmp_existingList);
+            }
+#else
                 return Asn1EncodableVector.FromCollection(existingList);
+#endif
 
             if (existingValue is Attribute existingAttr)
                 return Asn1EncodableVector.FromElement(existingAttr);
@@ -91,8 +104,15 @@ namespace Org.BouncyCastle.Asn1.Cms
         }
 
         public IDictionary<DerObjectIdentifier, object> ToDictionary() => BuildAttributes(m_attributes, out var ignore);
-
+#if NET35
+        public Asn1EncodableVector ToAsn1EncodableVector()
+        {
+            IReadOnlyCollection<Asn1Encodable> tmp_this = new ListEx<Asn1Encodable>(this.Select(a => a as Asn1Encodable));
+            return Asn1EncodableVector.FromCollection(tmp_this);
+        }
+#else
         public Asn1EncodableVector ToAsn1EncodableVector() => Asn1EncodableVector.FromCollection(this);
+#endif
 
         public Attributes ToAttributes() => new Attributes(this);
 

@@ -26,7 +26,7 @@ namespace Org.BouncyCastle.Asn1
             }
         }
 
-        internal static readonly byte[] EmptyOctets = Array.Empty<byte>();
+        internal static readonly byte[] EmptyOctets = new byte[0];
 
         /**
          * return an Octet string from the given object.

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using Org.BouncyCastle.Asn1.X509;
 
 namespace Org.BouncyCastle.Asn1.Esf
@@ -46,8 +46,12 @@ namespace Org.BouncyCastle.Asn1.Esf
         {
             if (certificates == null)
                 throw new ArgumentNullException(nameof(certificates));
-
+#if NET35
+            IReadOnlyCollection<Asn1Encodable> tmp_certificates = new ListEx<Asn1Encodable>(certificates.Select(cert => cert as Asn1Encodable));
+            m_certificates = DerSequence.FromVector(Asn1EncodableVector.FromEnumerable(tmp_certificates));
+#else
             m_certificates = DerSequence.FromVector(Asn1EncodableVector.FromEnumerable(certificates));
+#endif
         }
 
         public CertificateValues(IReadOnlyCollection<X509CertificateStructure> certificates)
@@ -55,7 +59,12 @@ namespace Org.BouncyCastle.Asn1.Esf
             if (certificates == null)
                 throw new ArgumentNullException(nameof(certificates));
 
+#if NET35
+            IReadOnlyCollection<Asn1Encodable> tmp_certificates = new ListEx<Asn1Encodable>(certificates.Select(cert => cert as Asn1Encodable));
+            m_certificates = DerSequence.FromVector(Asn1EncodableVector.FromEnumerable(tmp_certificates));
+#else
             m_certificates = DerSequence.FromCollection(certificates);
+#endif
         }
 
         public X509CertificateStructure[] GetCertificates() =>
