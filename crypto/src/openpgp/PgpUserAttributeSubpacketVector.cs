@@ -10,7 +10,7 @@ namespace Org.BouncyCastle.Bcpg.OpenPgp
         : IUserDataPacket
     {
         public static PgpUserAttributeSubpacketVector FromSubpackets(UserAttributeSubpacket[] packets) =>
-            new PgpUserAttributeSubpacketVector(packets ?? Array.Empty<UserAttributeSubpacket>());
+            new PgpUserAttributeSubpacketVector(packets ?? new UserAttributeSubpacket[0]);
 
         private readonly UserAttributeSubpacket[] m_packets;
 

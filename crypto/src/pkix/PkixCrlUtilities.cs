@@ -12,22 +12,38 @@ namespace Org.BouncyCastle.Pkix
 	{
 		// TODO[api] Redundant
 		public virtual ISet<X509Crl> FindCrls(X509CrlStoreSelector crlSelector, PkixParameters paramsPkix) =>
+#if NET35
+            new HashSetEx<X509Crl>(ImplFindCrls(crlSelector, paramsPkix));
+#else
             ImplFindCrls(crlSelector, paramsPkix);
+#endif
 
         public virtual ISet<X509Crl> FindCrls(ISelector<X509Crl> crlSelector, PkixParameters paramsPkix) =>
+#if NET35
+            new HashSetEx<X509Crl>(ImplFindCrls(crlSelector, paramsPkix));
+#else
             ImplFindCrls(crlSelector, paramsPkix);
+#endif
 
         // TODO[api] Redundant
         public virtual ISet<X509Crl> FindCrls(X509CrlStoreSelector crlSelector, PkixParameters paramsPkix,
 			DateTime currentDate)
 		{
+#if NET35
+            return new HashSetEx<X509Crl>(ImplFindCrls(crlSelector, paramsPkix, currentDate));
+#else
             return ImplFindCrls(crlSelector, paramsPkix, currentDate);
+#endif
         }
 
         public virtual ISet<X509Crl> FindCrls(ISelector<X509Crl> crlSelector, PkixParameters paramsPkix,
 			DateTime currentDate)
 		{
+#if NET35
+			return new HashSetEx<X509Crl>(ImplFindCrls(crlSelector, paramsPkix, currentDate));
+#else
 			return ImplFindCrls(crlSelector, paramsPkix, currentDate);
+#endif
 		}
 
         internal static HashSet<X509Crl> ImplFindCrls(ISelector<X509Crl> crlSelector, PkixParameters paramsPkix)
@@ -42,6 +58,7 @@ namespace Org.BouncyCastle.Pkix
                 throw new Exception("Exception obtaining complete CRLs.", e);
             }
         }
+
 
         internal static HashSet<X509Crl> ImplFindCrls(ISelector<X509Crl> crlSelector, PkixParameters paramsPkix,
 			DateTime currentDate)

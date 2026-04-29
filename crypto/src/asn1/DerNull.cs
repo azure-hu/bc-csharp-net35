@@ -17,16 +17,16 @@ namespace Org.BouncyCastle.Asn1
         }
 
         internal override IAsn1Encoding GetEncoding(int encoding) =>
-            new PrimitiveEncoding(Asn1Tags.Universal, Asn1Tags.Null, Array.Empty<byte>());
+            new PrimitiveEncoding(Asn1Tags.Universal, Asn1Tags.Null, new byte[0]);
 
         internal override IAsn1Encoding GetEncodingImplicit(int encoding, int tagClass, int tagNo) =>
-            new PrimitiveEncoding(tagClass, tagNo, Array.Empty<byte>());
+            new PrimitiveEncoding(tagClass, tagNo, new byte[0]);
 
         internal sealed override DerEncoding GetEncodingDer() =>
-            new PrimitiveDerEncoding(Asn1Tags.Universal, Asn1Tags.Null, Array.Empty<byte>());
+            new PrimitiveDerEncoding(Asn1Tags.Universal, Asn1Tags.Null, new byte[0]);
 
         internal sealed override DerEncoding GetEncodingDerImplicit(int tagClass, int tagNo) =>
-            new PrimitiveDerEncoding(tagClass, tagNo, Array.Empty<byte>());
+            new PrimitiveDerEncoding(tagClass, tagNo, new byte[0]);
 
         protected override bool Asn1Equals(Asn1Object asn1Object) => asn1Object is DerNull;
 

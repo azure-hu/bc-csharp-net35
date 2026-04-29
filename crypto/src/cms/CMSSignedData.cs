@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-
+using System.Linq;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Cms;
 using Org.BouncyCastle.Asn1.X509;
@@ -178,14 +178,22 @@ namespace Org.BouncyCastle.Cms
         [Obsolete("Use 'GetDigestAlgorithms' instead")]
         public ISet<AlgorithmIdentifier> GetDigestAlgorithmIDs()
         {
+#if NET35
+            ISet<AlgorithmIdentifier> result = new HashSetEx<AlgorithmIdentifier>();
+#else
             HashSet<AlgorithmIdentifier> result = new HashSet<AlgorithmIdentifier>();
+#endif
 
             foreach (var entry in SignedData.DigestAlgorithms)
             {
                 result.Add(AlgorithmIdentifier.GetInstance(entry));
             }
 
+#if NET35
+            return result;
+#else
             return CollectionUtilities.ReadOnly(result);
+#endif
         }
 
         public IEnumerable<AlgorithmIdentifier> GetDigestAlgorithms() =>
@@ -336,7 +344,11 @@ namespace Org.BouncyCastle.Cms
             var digestAlgorithmsBuilder = new DigestAlgorithmsBuilder(digestAlgorithmFinder);
 
             var signers = signerInformationStore.SignersInternal;
+#if NET35
+            var signerInfos = new ListEx<SignerInfo>(signers.Count);
+#else
             var signerInfos = new List<SignerInfo>(signers.Count);
+#endif
 
             foreach (var signerInformation in signers)
             {
@@ -350,7 +362,12 @@ namespace Org.BouncyCastle.Cms
             Asn1Set newDigestAlgorithms = digestAlgorithmsBuilder.Build(
                 useDL: !(oldContent.DigestAlgorithms is BerSet));
 
+#if NET35
+            IReadOnlyCollection<Asn1Encodable> tmp_signerInfos = new ListEx<Asn1Encodable>(signerInfos.Select(si => si as Asn1Encodable));
+            Asn1Set newSignerInfos = tmp_signerInfos.ToAsn1Set(useDer: false,
+#else
             Asn1Set newSignerInfos = signerInfos.ToAsn1Set(useDer: false,
+#endif
                 useDL: !(oldContent.SignerInfos is BerSet));
 
             var newContent = new SignedData(newDigestAlgorithms, oldContent.EncapContentInfo, oldContent.Certificates,
@@ -405,7 +422,13 @@ namespace Org.BouncyCastle.Cms
                     CmsUtilities.CollectAttributeCertificates(certificates, x509AttrCerts);
                 }
 
+#if NET35
+                ListEx<Asn1Encodable> tmp_certificates = new ListEx<Asn1Encodable>(certificates);
+                Asn1Set berSet = CmsUtilities.ToBerSet(tmp_certificates);
+#else
                 Asn1Set berSet = CmsUtilities.ToBerSet(certificates);
+#endif
+
                 if (berSet.Count > 0)
                 {
                     certSet = berSet;
@@ -423,8 +446,12 @@ namespace Org.BouncyCastle.Cms
                 {
                     CmsUtilities.CollectOtherRevocationInfos(revocations, otherRevocationInfos);
                 }
-
+#if NET35
+                ListEx<Asn1Encodable> tmp_revocations = new ListEx<Asn1Encodable>(revocations);
+                Asn1Set berSet = CmsUtilities.ToBerSet(tmp_revocations);
+#else
                 Asn1Set berSet = CmsUtilities.ToBerSet(revocations);
+#endif
                 if (berSet.Count > 0)
                 {
                     revocationSet = berSet;

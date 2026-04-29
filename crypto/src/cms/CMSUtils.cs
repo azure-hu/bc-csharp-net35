@@ -52,7 +52,7 @@ namespace Org.BouncyCastle.Cms
         internal static byte[] GetByteArray(CmsProcessable content)
         {
             if (content == null)
-                return Array.Empty<byte>();
+                return new byte[0];
 
             if (content is CmsProcessableByteArray byteArray)
                 return byteArray.GetByteArray();

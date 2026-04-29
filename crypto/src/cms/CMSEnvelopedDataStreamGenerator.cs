@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-
+using System.Linq;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Cms;
 using Org.BouncyCastle.Asn1.X509;
@@ -243,7 +243,12 @@ namespace Org.BouncyCastle.Cms
                         Asn1.Cms.AttributeTable attrTable = _outer.unprotectedAttributeGenerator.GetAttributes(
                             new Dictionary<CmsAttributeTableParameter, object>());
 
+#if NET35
+                        IReadOnlyCollection<Asn1Encodable> tmp_attrTable = new ListEx<Asn1Encodable>(attrTable.Select(a => a as Asn1Encodable));
+                        Asn1Set unprotectedAttrs = BerSet.FromCollection(tmp_attrTable);
+#else
                         Asn1Set unprotectedAttrs = BerSet.FromCollection(attrTable);
+#endif
 
                         _envGen.AddObject(new DerTaggedObject(false, 1, unprotectedAttrs));
                     }

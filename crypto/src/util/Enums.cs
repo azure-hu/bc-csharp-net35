@@ -32,8 +32,18 @@ namespace Org.BouncyCastle.Utilities
             {
                 s = s.Replace('-', '_');
                 s = s.Replace('/', '_');
-
+#if NET35
+                try
+                {
+                    result = (TEnum)Enum.Parse(typeof(TEnum), s);
+                    return true;
+                }
+                catch (Exception)
+                {
+                }
+#else
                 return Enum.TryParse<TEnum>(s, out result);
+#endif
             }
 
             result = default(TEnum);

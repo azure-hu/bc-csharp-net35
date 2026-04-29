@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Cms;
 using Org.BouncyCastle.Asn1.CryptoPro;
@@ -125,7 +125,11 @@ namespace Org.BouncyCastle.Cms
         // TODO[api] Make internal
         internal protected virtual Asn1Set GetAttributeSet(Asn1.Cms.AttributeTable attr)
         {
+#if NET35
+            return attr == null ? null : DerSet.FromCollection(new ListEx<Asn1Encodable>(attr.Select(a => a as Asn1Encodable)));
+#else
             return attr == null ? null : DerSet.FromCollection(attr);
+#endif
         }
 
         public void AddAttributeCertificate(X509V2AttributeCertificate attrCert) =>

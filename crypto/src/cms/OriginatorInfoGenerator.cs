@@ -63,6 +63,10 @@ namespace Org.BouncyCastle.Cms
             this.origCrls = revocations;
         }
 
+#if NET35
+        public virtual OriginatorInfo Generate() => new OriginatorInfo(new ListEx<Asn1Encodable>(origCerts)?.ToDerSet(), new ListEx<Asn1Encodable>(origCrls)?.ToDerSet());
+#else
         public virtual OriginatorInfo Generate() => new OriginatorInfo(origCerts?.ToDerSet(), origCrls?.ToDerSet());
+#endif
     }
 }

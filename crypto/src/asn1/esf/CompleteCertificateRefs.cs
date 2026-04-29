@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Org.BouncyCastle.Asn1.Esf
 {
@@ -44,8 +45,12 @@ namespace Org.BouncyCastle.Asn1.Esf
         {
             if (otherCertIDs == null)
                 throw new ArgumentNullException(nameof(otherCertIDs));
-
+#if NET35
+            IEnumerable<Asn1Encodable> tmp_otherCertIDs = new List<Asn1Encodable>(otherCertIDs.Select(i => i as Asn1Encodable));
+            m_otherCertIDs = DerSequence.FromVector(Asn1EncodableVector.FromEnumerable(tmp_otherCertIDs));
+#else
             m_otherCertIDs = DerSequence.FromVector(Asn1EncodableVector.FromEnumerable(otherCertIDs));
+#endif
         }
 
         public CompleteCertificateRefs(IReadOnlyCollection<OtherCertID> otherCertIDs)
@@ -53,7 +58,12 @@ namespace Org.BouncyCastle.Asn1.Esf
             if (otherCertIDs == null)
                 throw new ArgumentNullException(nameof(otherCertIDs));
 
+#if NET35
+            IReadOnlyCollection<Asn1Encodable> tmp_otherCertIDs = new ListEx<Asn1Encodable>(otherCertIDs.Select(i => i as Asn1Encodable));
+            m_otherCertIDs = DerSequence.FromCollection(tmp_otherCertIDs);
+#else
             m_otherCertIDs = DerSequence.FromCollection(otherCertIDs);
+#endif
         }
 
         public OtherCertID[] GetOtherCertIDs() => m_otherCertIDs.MapElements(OtherCertID.GetInstance);

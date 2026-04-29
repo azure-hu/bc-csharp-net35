@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Org.BouncyCastle.Asn1.X509
 {
@@ -92,9 +93,23 @@ namespace Org.BouncyCastle.Asn1.X509
             return new DerSequence(v);
         }
 
+#if NET35
+        private static DerSequence CreateSequence(IList<GeneralSubtree> subtrees)
+        {
+            if (subtrees == null)
+                return null;
+            else
+            {
+                IEnumerable<Asn1Encodable> tmp_subtrees = new List<Asn1Encodable>(subtrees.Select(st => st as Asn1Encodable));
+                return DerSequence.FromVector(Asn1EncodableVector.FromEnumerable(tmp_subtrees));
+            }
+        }
+
+#else
         private static DerSequence CreateSequence(IList<GeneralSubtree> subtrees) =>
             subtrees == null ? null : DerSequence.FromVector(Asn1EncodableVector.FromEnumerable(subtrees));
 
+#endif
         private static DerSequence CreateSequence(IReadOnlyCollection<GeneralSubtree> subtrees) =>
             subtrees == null ? null : DerSequence.FromCollection(subtrees);
     }

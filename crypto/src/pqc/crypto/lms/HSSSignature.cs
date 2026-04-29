@@ -70,10 +70,18 @@ namespace Org.BouncyCastle.Pqc.Crypto.Lms
 
         private static HssSignature Parse(int L, Stream stream, bool leaveOpen)
         {
+#if NET35            
+            var binaryReader = new BinaryReader(stream, Encoding.UTF8);
+            var hssSignature = Parse(L, binaryReader);
+            binaryReader.Close();
+            return hssSignature;
+
+#else
             using (var binaryReader = new BinaryReader(stream, Encoding.UTF8, leaveOpen))
             {
                 return Parse(L, binaryReader);
             }
+#endif
         }
 
         [Obsolete("Use 'LMinus1' instead")]

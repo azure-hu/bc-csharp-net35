@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Org.BouncyCastle.Asn1.Esf
 {
@@ -10,9 +11,9 @@ namespace Org.BouncyCastle.Asn1.Esf
     /// 	sigPolicyHash			SigPolicyHash,
     /// 	sigPolicyQualifiers		SEQUENCE SIZE (1..MAX) OF SigPolicyQualifierInfo OPTIONAL
     /// }
-    /// 
+    ///
     /// SigPolicyId ::= OBJECT IDENTIFIER
-    /// 
+    ///
     /// SigPolicyHash ::= OtherHashAlgAndValue
     /// </code>
     /// </remarks>
@@ -69,7 +70,11 @@ namespace Org.BouncyCastle.Asn1.Esf
         }
 
         public SignaturePolicyId(DerObjectIdentifier sigPolicyIdentifier, OtherHashAlgAndValue sigPolicyHash)
+#if NET35
+            : this(sigPolicyIdentifier, sigPolicyHash, null as SigPolicyQualifierInfo)
+#else
             : this(sigPolicyIdentifier, sigPolicyHash, null)
+#endif
         {
         }
 
@@ -89,7 +94,12 @@ namespace Org.BouncyCastle.Asn1.Esf
 
             if (sigPolicyQualifiers != null)
             {
+#if NET35
+                IEnumerable<Asn1Encodable> tmp_sigPolicyQualifiers = new List<Asn1Encodable>(sigPolicyQualifiers.Select(o => o as Asn1Encodable));
+                m_sigPolicyQualifiers = DerSequence.FromVector(Asn1EncodableVector.FromEnumerable(tmp_sigPolicyQualifiers));
+#else
                 m_sigPolicyQualifiers = DerSequence.FromVector(Asn1EncodableVector.FromEnumerable(sigPolicyQualifiers));
+#endif
             }
         }
 
@@ -101,7 +111,12 @@ namespace Org.BouncyCastle.Asn1.Esf
 
             if (sigPolicyQualifiers != null)
             {
+#if NET35
+                IReadOnlyCollection<Asn1Encodable> tmp_sigPolicyQualifiers = new ListEx<Asn1Encodable>(sigPolicyQualifiers.Select(o => o as Asn1Encodable));
+                m_sigPolicyQualifiers = DerSequence.FromCollection(tmp_sigPolicyQualifiers);
+#else
                 m_sigPolicyQualifiers = DerSequence.FromCollection(sigPolicyQualifiers);
+#endif
             }
         }
 

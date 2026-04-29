@@ -714,8 +714,13 @@ namespace Org.BouncyCastle.Cms
                 if (outer._certs.Count > 0)
                 {
                     Asn1Set certs = outer._useDerForCerts
+#if NET35
+                        ? CmsUtilities.ToDerSet(new ListEx<Asn1Encodable>(outer._certs))
+                        : CmsUtilities.ToBerSet(new ListEx<Asn1Encodable>(outer._certs));
+#else
                         ? CmsUtilities.ToDerSet(outer._certs)
                         : CmsUtilities.ToBerSet(outer._certs);
+#endif
 
                     WriteToGenerator(_sigGen, new BerTaggedObject(false, 0, certs));
                 }
@@ -723,8 +728,13 @@ namespace Org.BouncyCastle.Cms
                 if (outer._crls.Count > 0)
                 {
                     Asn1Set crls = outer._useDerForCrls
+#if NET35
+                        ? CmsUtilities.ToDerSet(new ListEx<Asn1Encodable>(outer._crls))
+                        : CmsUtilities.ToBerSet(new ListEx<Asn1Encodable>(outer._crls));
+#else
                         ? CmsUtilities.ToDerSet(outer._crls)
                         : CmsUtilities.ToBerSet(outer._crls);
+#endif
 
                     WriteToGenerator(_sigGen, new BerTaggedObject(false, 1, crls));
                 }

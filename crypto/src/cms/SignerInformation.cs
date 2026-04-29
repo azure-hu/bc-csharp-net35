@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-
+using System.Linq;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Cms;
 using Org.BouncyCastle.Asn1.EdEC;
@@ -747,7 +747,12 @@ namespace Org.BouncyCastle.Cms
             Asn1.Cms.AttributeTable unsignedAttributes)
         {
             // TODO[cms] Any way to give control over ASN.1 encoding here?
+#if NET35
+            IReadOnlyCollection<Asn1Encodable> tmp_unsignedAttributes = new ListEx<Asn1Encodable>(unsignedAttributes.Select(ua => ua as Asn1Encodable));
+            var newUnsignedAttrs = tmp_unsignedAttributes?.ToDerSet();
+#else
             var newUnsignedAttrs = unsignedAttributes?.ToDerSet();
+#endif
 
             var oldInfo = signerInformation.SignerInfo;
 
@@ -775,7 +780,12 @@ namespace Org.BouncyCastle.Cms
             var attributeTable = (signerInformation.UnsignedAttributes ?? DerSet.Empty.ToAttributeTable())
                 .Add(new Asn1.Cms.Attribute(CmsAttributes.CounterSignature, attrValues));
 
+#if NET35
+            IReadOnlyCollection<Asn1Encodable> tmp_attributeTable = new ListEx<Asn1Encodable>(attributeTable.Select(at => at as Asn1Encodable));
+            var newUnsignedAttrs = tmp_attributeTable.ToDerSet();
+#else
             var newUnsignedAttrs = attributeTable.ToDerSet();
+#endif
 
             var oldInfo = signerInformation.SignerInfo;
 

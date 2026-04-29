@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-
+using System.Linq;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Cms;
 using Org.BouncyCastle.Asn1.EdEC;
@@ -574,9 +574,18 @@ namespace Org.BouncyCastle.Cms
                 }
             }
 
+#if NET35
+            IReadOnlyCollection<Asn1Encodable> tmp_certs = new ListEx<Asn1Encodable>(_certs);
+            Asn1Set certificates = tmp_certs.ToAsn1SetOptional(_useDerForCerts, _useDefiniteLength);
+
+            IReadOnlyCollection<Asn1Encodable> tmp_crls = new ListEx<Asn1Encodable>(_crls);
+            Asn1Set crls = tmp_crls.ToAsn1SetOptional(_useDerForCrls, _useDefiniteLength);
+#else
+
             Asn1Set certificates = _certs.ToAsn1SetOptional(_useDerForCerts, _useDefiniteLength);
 
             Asn1Set crls = _crls.ToAsn1SetOptional(_useDerForCrls, _useDefiniteLength);
+#endif
 
             Asn1OctetString encapContent = null;
             if (encapsulate)
@@ -602,12 +611,21 @@ namespace Org.BouncyCastle.Cms
 
             ContentInfo encapContentInfo = new ContentInfo(encapContentType, encapContent);
 
+#if NET35
+            IReadOnlyCollection<Asn1Encodable> tmp_signerInfos = new ListEx<Asn1Encodable>(signerInfos.Select(si => si as Asn1Encodable));
+#endif
+
+
             SignedData signedData = new SignedData(
                 digestAlgorithmsBuilder.Build(useDL: UseDefiniteLength),
                 encapContentInfo,
                 certificates,
                 crls,
+#if NET35
+                DerSet.FromCollection(tmp_signerInfos));
+#else
                 signerInfos.ToAsn1Set(useDer: false, useDL: UseDefiniteLength));
+#endif
 
             var contentInfo = new ContentInfo(CmsObjectIdentifiers.SignedData, signedData);
 

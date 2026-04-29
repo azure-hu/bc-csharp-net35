@@ -182,7 +182,11 @@ namespace Org.BouncyCastle.Pkix
 		// Returns a Set of the most-trusted CAs.
 		public virtual ISet<TrustAnchor> GetTrustAnchors()
 		{
+#if NET35
+			return new HashSetEx<TrustAnchor>(this.trustAnchors);
+#else
 			return new HashSet<TrustAnchor>(this.trustAnchors);
+#endif
 		}
 
 		// Sets the set of most-trusted CAs.
@@ -310,10 +314,17 @@ namespace Org.BouncyCastle.Pkix
 		public virtual ISet<string> GetInitialPolicies()
 		{
 			// TODO Can it really be null?
+#if NET35
+			if (initialPolicies == null)
+				return new HashSetEx<string>();
+
+			return new HashSetEx<string>(initialPolicies);
+#else
 			if (initialPolicies == null)
 				return new HashSet<string>();
 
 			return new HashSet<string>(initialPolicies);
+#endif
 		}
 
 		/**
@@ -646,7 +657,11 @@ namespace Org.BouncyCastle.Pkix
 		*/
 		public virtual ISet<TrustAnchor> GetTrustedACIssuers()
 		{
+#if NET35
+			return new HashSetEx<TrustAnchor>(trustedACIssuers);
+#else
 			return new HashSet<TrustAnchor>(trustedACIssuers);
+#endif
 		}
 
 		/**
@@ -688,7 +703,11 @@ namespace Org.BouncyCastle.Pkix
 		*/
 		public virtual ISet<string> GetNecessaryACAttributes()
 		{
+#if NET35
+			return new HashSetEx<string>(necessaryACAttributes);
+#else
 			return new HashSet<string>(necessaryACAttributes);
+#endif
 		}
 
 		/**
@@ -728,7 +747,11 @@ namespace Org.BouncyCastle.Pkix
 		*/
 		public virtual ISet<string> GetProhibitedACAttributes()
 		{
+#if NET35
+			return new HashSetEx<string>(prohibitedACAttributes);
+#else
 			return new HashSet<string>(prohibitedACAttributes);
+#endif
 		}
 
 		/**
@@ -766,7 +789,11 @@ namespace Org.BouncyCastle.Pkix
 		*/
 		public virtual ISet<PkixAttrCertChecker> GetAttrCertCheckers()
 		{
+#if NET35
+			return new HashSetEx<PkixAttrCertChecker>(attrCertCheckers);
+#else
 			return new HashSet<PkixAttrCertChecker>(attrCertCheckers);
+#endif
 		}
 
 		/**

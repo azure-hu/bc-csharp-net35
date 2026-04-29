@@ -38,7 +38,11 @@ namespace Org.BouncyCastle.Pkix
 
         public virtual ISet<PolicyQualifierInfo> PolicyQualifiers
         {
+#if NET35
+            get { return new HashSetEx<PolicyQualifierInfo>(this.mPolicyQualifiers); }
+#else
             get { return new HashSet<PolicyQualifierInfo>(this.mPolicyQualifiers); }
+#endif
         }
 
         public virtual string ValidPolicy
@@ -53,8 +57,13 @@ namespace Org.BouncyCastle.Pkix
 
         public virtual ISet<string> ExpectedPolicies
         {
+#if NET35
+            get { return new HashSetEx<string>(this.mExpectedPolicies); }
+            set { this.mExpectedPolicies = new HashSetEx<string>(value); }
+#else
             get { return new HashSet<string>(this.mExpectedPolicies); }
             set { this.mExpectedPolicies = new HashSet<string>(value); }
+#endif
         }
 
         public virtual PkixPolicyNode Parent
@@ -116,8 +125,13 @@ namespace Org.BouncyCastle.Pkix
 
         public virtual PkixPolicyNode Copy()
         {
+#if NET35
+            var copy = new PkixPolicyNode(children: null, mDepth, new HashSetEx<string>(mExpectedPolicies),
+                parent: null, new HashSetEx<PolicyQualifierInfo>(mPolicyQualifiers), mValidPolicy, mCritical);
+#else
             var copy = new PkixPolicyNode(children: null, mDepth, new HashSet<string>(mExpectedPolicies),
                 parent: null, new HashSet<PolicyQualifierInfo>(mPolicyQualifiers), mValidPolicy, mCritical);
+#endif
 
             foreach (PkixPolicyNode child in mChildren)
             {

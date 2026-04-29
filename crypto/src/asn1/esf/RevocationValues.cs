@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Org.BouncyCastle.Asn1.X509;
 
@@ -70,12 +70,22 @@ namespace Org.BouncyCastle.Asn1.Esf
         {
             if (crlVals != null)
             {
+#if NET35
+                IEnumerable<Asn1Encodable> tmp_crlVals = new List<Asn1Encodable>(crlVals.Select(c => c as Asn1Encodable));
+                m_crlVals = DerSequence.FromVector(Asn1EncodableVector.FromEnumerable(tmp_crlVals));
+#else
                 m_crlVals = DerSequence.FromVector(Asn1EncodableVector.FromEnumerable(crlVals));
+#endif
             }
 
             if (ocspVals != null)
             {
+#if NET35
+                IEnumerable<Asn1Encodable> tmp_ocspVals = new List<Asn1Encodable>(ocspVals.Select(o => o as Asn1Encodable));
+                m_ocspVals = DerSequence.FromVector(Asn1EncodableVector.FromEnumerable(tmp_ocspVals));
+#else
                 m_ocspVals = DerSequence.FromVector(Asn1EncodableVector.FromEnumerable(ocspVals));
+#endif
             }
 
             m_otherRevVals = otherRevVals;
@@ -86,12 +96,22 @@ namespace Org.BouncyCastle.Asn1.Esf
         {
             if (crlVals != null)
             {
+#if NET35
+                IReadOnlyCollection<Asn1Encodable> tmp_crlVals = new ListEx<Asn1Encodable>(crlVals.Select(c => c as Asn1Encodable));
+                m_crlVals = DerSequence.FromCollection(tmp_crlVals);
+#else
                 m_crlVals = DerSequence.FromCollection(crlVals);
+#endif
             }
 
             if (ocspVals != null)
             {
+#if NET35
+                IReadOnlyCollection<Asn1Encodable> tmp_ocspVals = new ListEx<Asn1Encodable>(ocspVals.Select(o => o as Asn1Encodable));
+                m_ocspVals = DerSequence.FromCollection(tmp_ocspVals);
+#else
                 m_ocspVals = DerSequence.FromCollection(ocspVals);
+#endif
             }
 
             m_otherRevVals = otherRevVals;

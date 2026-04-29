@@ -37,10 +37,10 @@ namespace Org.BouncyCastle.Pkix
     {
         public virtual PkixCertPathValidatorResult Validate(PkixCertPath certPath, PkixParameters paramsPkix)
         {
-			if (paramsPkix.GetTrustAnchors() == null)
+            if (paramsPkix.GetTrustAnchors() == null)
             {
                 throw new ArgumentException(
-					"trustAnchors is null, this is not allowed for certification path validation.",
+                    "trustAnchors is null, this is not allowed for certification path validation.",
                     nameof(paramsPkix));
             }
 
@@ -57,7 +57,7 @@ namespace Org.BouncyCastle.Pkix
             if (n == 0)
                 throw new PkixCertPathValidatorException("Certification path is empty.", null, 0);
 
-			//
+            //
             // (b)
             //
             // DateTime validDate = PkixCertPathValidatorUtilities.GetValidDate(paramsPkix);
@@ -108,8 +108,13 @@ namespace Org.BouncyCastle.Pkix
 
             policySet.Add(Rfc3280CertPathUtilities.ANY_POLICY);
 
+#if NET35
+            var validPolicyTree = new PkixPolicyNode(null, 0, new HashSetEx<String>(policySet), null, new HashSetEx<PolicyQualifierInfo>(),
+                Rfc3280CertPathUtilities.ANY_POLICY, false);
+#else
             var validPolicyTree = new PkixPolicyNode(null, 0, policySet, null, new HashSet<PolicyQualifierInfo>(),
                 Rfc3280CertPathUtilities.ANY_POLICY, false);
+#endif
 
             policyNodes[0].Add(validPolicyTree);
 
@@ -208,11 +213,11 @@ namespace Org.BouncyCastle.Pkix
             // 6.1.3
             //
 
-			var targetConstraints = paramsPkix.GetTargetConstraintsCert();
+            var targetConstraints = paramsPkix.GetTargetConstraintsCert();
             if (targetConstraints != null && !targetConstraints.Match(certs[0]))
             {
                 throw new PkixCertPathValidatorException(
-					"Target certificate in certification path does not match targetConstraints.", null, 0);
+                    "Target certificate in certification path does not match targetConstraints.", null, 0);
             }
 
             //
@@ -248,12 +253,12 @@ namespace Org.BouncyCastle.Pkix
                 //
 
                 Rfc3280CertPathUtilities.ProcessCertA(certPath, paramsPkix, index, workingPublicKey,
-					workingIssuerName, sign);
+                    workingIssuerName, sign);
 
                 Rfc3280CertPathUtilities.ProcessCertBC(certPath, index, nameConstraintValidator);
 
                 validPolicyTree = Rfc3280CertPathUtilities.ProcessCertD(certPath, index,
-					acceptablePolicies, validPolicyTree, policyNodes, inhibitAnyPolicy);
+                    acceptablePolicies, validPolicyTree, policyNodes, inhibitAnyPolicy);
 
                 validPolicyTree = Rfc3280CertPathUtilities.ProcessCertE(certPath, index, validPolicyTree);
 
@@ -272,13 +277,13 @@ namespace Org.BouncyCastle.Pkix
                             continue;
 
                         throw new PkixCertPathValidatorException(
-							"Version 1 certificates can't be used as CA ones.", null, index);
+                            "Version 1 certificates can't be used as CA ones.", null, index);
                     }
 
                     Rfc3280CertPathUtilities.PrepareNextCertA(certPath, index);
 
                     validPolicyTree = Rfc3280CertPathUtilities.PrepareCertB(certPath, index, policyNodes,
-						validPolicyTree, policyMapping);
+                        validPolicyTree, policyMapping);
 
                     Rfc3280CertPathUtilities.PrepareNextCertG(certPath, index, nameConstraintValidator);
 
@@ -308,33 +313,41 @@ namespace Org.BouncyCastle.Pkix
                     // (n)
                     Rfc3280CertPathUtilities.PrepareNextCertN(certPath, index);
 
-					var criticalExtensions1 = cert.GetCriticalExtensionOids();
+                    var criticalExtensions1 = cert.GetCriticalExtensionOids();
 
-					if (criticalExtensions1 != null)
-					{
-						criticalExtensions1 = new HashSet<string>(criticalExtensions1);
+                    if (criticalExtensions1 != null)
+                    {
+#if NET35
+                        criticalExtensions1 = new HashSetEx<string>(criticalExtensions1);
+#else
+                        criticalExtensions1 = new HashSet<string>(criticalExtensions1);
+#endif
 
-						// these extensions are handled by the algorithm
-						criticalExtensions1.Remove(X509Extensions.KeyUsage.Id);
-						criticalExtensions1.Remove(X509Extensions.CertificatePolicies.Id);
-						criticalExtensions1.Remove(X509Extensions.PolicyMappings.Id);
-						criticalExtensions1.Remove(X509Extensions.InhibitAnyPolicy.Id);
-						criticalExtensions1.Remove(X509Extensions.IssuingDistributionPoint.Id);
-						criticalExtensions1.Remove(X509Extensions.DeltaCrlIndicator.Id);
-						criticalExtensions1.Remove(X509Extensions.PolicyConstraints.Id);
-						criticalExtensions1.Remove(X509Extensions.BasicConstraints.Id);
-						criticalExtensions1.Remove(X509Extensions.SubjectAlternativeName.Id);
-						criticalExtensions1.Remove(X509Extensions.NameConstraints.Id);
-					}
-					else
-					{
-						criticalExtensions1 = new HashSet<string>();
-					}
+                        // these extensions are handled by the algorithm
+                        criticalExtensions1.Remove(X509Extensions.KeyUsage.Id);
+                        criticalExtensions1.Remove(X509Extensions.CertificatePolicies.Id);
+                        criticalExtensions1.Remove(X509Extensions.PolicyMappings.Id);
+                        criticalExtensions1.Remove(X509Extensions.InhibitAnyPolicy.Id);
+                        criticalExtensions1.Remove(X509Extensions.IssuingDistributionPoint.Id);
+                        criticalExtensions1.Remove(X509Extensions.DeltaCrlIndicator.Id);
+                        criticalExtensions1.Remove(X509Extensions.PolicyConstraints.Id);
+                        criticalExtensions1.Remove(X509Extensions.BasicConstraints.Id);
+                        criticalExtensions1.Remove(X509Extensions.SubjectAlternativeName.Id);
+                        criticalExtensions1.Remove(X509Extensions.NameConstraints.Id);
+                    }
+                    else
+                    {
+#if NET35
+                        criticalExtensions1 = new HashSetEx<string>();
+#else
+                        criticalExtensions1 = new HashSet<string>();
+#endif
+                    }
 
-					// (o)
-					Rfc3280CertPathUtilities.PrepareNextCertO(certPath, index, criticalExtensions1, certPathCheckers);
+                    // (o)
+                    Rfc3280CertPathUtilities.PrepareNextCertO(certPath, index, criticalExtensions1, certPathCheckers);
 
-					// set signing certificate for next round
+                    // set signing certificate for next round
                     sign = cert;
 
                     // (c)
@@ -377,7 +390,11 @@ namespace Org.BouncyCastle.Pkix
 
             if (criticalExtensions != null)
             {
+#if NET35
+                criticalExtensions = new HashSetEx<string>(criticalExtensions);
+#else
                 criticalExtensions = new HashSet<string>(criticalExtensions);
+#endif
 
                 // Requires .Id
                 // these extensions are handled by the algorithm
@@ -396,7 +413,11 @@ namespace Org.BouncyCastle.Pkix
             }
             else
             {
+#if NET35
+                criticalExtensions = new HashSetEx<string>();
+#else
                 criticalExtensions = new HashSet<string>();
+#endif
             }
 
             Rfc3280CertPathUtilities.WrapupCertF(certPath, index + 1, certPathCheckers, criticalExtensions);
@@ -406,10 +427,10 @@ namespace Org.BouncyCastle.Pkix
 
             if ((explicitPolicy > 0) || (intersection != null))
             {
-				return new PkixCertPathValidatorResult(trust, intersection, cert.GetPublicKey());
-			}
+                return new PkixCertPathValidatorResult(trust, intersection, cert.GetPublicKey());
+            }
 
-			throw new PkixCertPathValidatorException("Path processing failed on policy.", null, index);
+            throw new PkixCertPathValidatorException("Path processing failed on policy.", null, index);
         }
     }
 }

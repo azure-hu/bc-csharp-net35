@@ -134,7 +134,11 @@ namespace Org.BouncyCastle.Pkix
 					ISet<X509Certificate> issuers;
 					try
 					{
+#if NET35
+						issuers = new HashSetEx<X509Certificate>(PkixCertPathValidatorUtilities.FindIssuerCerts(tbvCert, pkixParams));
+#else
 						issuers = PkixCertPathValidatorUtilities.FindIssuerCerts(tbvCert, pkixParams);
+#endif
 					}
 					catch (Exception e)
 					{

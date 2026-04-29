@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Org.BouncyCastle.Asn1.Esf
 {
@@ -45,7 +46,12 @@ namespace Org.BouncyCastle.Asn1.Esf
             if (crlOcspRefs == null)
                 throw new ArgumentNullException(nameof(crlOcspRefs));
 
+#if NET35
+            IEnumerable<Asn1Encodable> tmp_crlOcspRefs = new List<Asn1Encodable>(crlOcspRefs.Select(i => i as Asn1Encodable));
+            m_crlOcspRefs = DerSequence.FromVector(Asn1EncodableVector.FromEnumerable(tmp_crlOcspRefs));
+#else
             m_crlOcspRefs = DerSequence.FromVector(Asn1EncodableVector.FromEnumerable(crlOcspRefs));
+#endif
         }
 
         public CompleteRevocationRefs(IReadOnlyCollection<CrlOcspRef> crlOcspRefs)
@@ -53,7 +59,12 @@ namespace Org.BouncyCastle.Asn1.Esf
             if (crlOcspRefs == null)
                 throw new ArgumentNullException(nameof(crlOcspRefs));
 
+#if NET35
+            IReadOnlyCollection<Asn1Encodable> tmp_crlOcspRefs = new ListEx<Asn1Encodable>(crlOcspRefs.Select(i => i as Asn1Encodable));
+            m_crlOcspRefs = DerSequence.FromCollection(tmp_crlOcspRefs);
+#else
             m_crlOcspRefs = DerSequence.FromCollection(crlOcspRefs);
+#endif
         }
 
         public CrlOcspRef[] GetCrlOcspRefs() => m_crlOcspRefs.MapElements(CrlOcspRef.GetInstance);

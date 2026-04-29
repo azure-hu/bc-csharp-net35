@@ -74,7 +74,11 @@ namespace Org.BouncyCastle.Pkix
 		/// <returns>the excluded certificates.</returns>
 		public virtual ISet<X509Certificate> GetExcludedCerts()
 		{
+#if NET35
+			return new HashSetEx<X509Certificate>(excludedCerts);
+#else
 			return new HashSet<X509Certificate>(excludedCerts);
+#endif
 		}
 
 		/// <summary>
@@ -101,7 +105,7 @@ namespace Org.BouncyCastle.Pkix
 		/**
 		* Can alse handle <code>ExtendedPKIXBuilderParameters</code> and
 		* <code>PKIXBuilderParameters</code>.
-		* 
+		*
 		* @param params Parameters to set.
 		* @see Org.BouncyCastle.X509.ExtendedPKIXParameters#setParams(java.security.cert.PKIXParameters)
 		*/

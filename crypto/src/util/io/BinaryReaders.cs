@@ -8,7 +8,11 @@ namespace Org.BouncyCastle.Utilities.IO
     {
         internal static T Parse<T>(Func<BinaryReader, T> parse, Stream stream, bool leaveOpen)
         {
+#if NET35
+            using (var binaryReader = new BinaryReader(stream, Encoding.UTF8))
+#else
             using (var binaryReader = new BinaryReader(stream, Encoding.UTF8, leaveOpen))
+#endif
             {
                 return parse(binaryReader);
             }

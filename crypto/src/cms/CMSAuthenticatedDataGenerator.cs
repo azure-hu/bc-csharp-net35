@@ -89,25 +89,44 @@ namespace Org.BouncyCastle.Cms
                 throw new CmsException("exception decoding algorithm parameters.", e);
             }
 
-            DerSet recipientInfos;
-            try
+#if NET35
+            var recipientInfos = new Asn1EncodableVector(recipientInfoGenerators.Count);
+
+            foreach (RecipientInfoGenerator rig in recipientInfoGenerators)
             {
-                recipientInfos = DerSet.Map(recipientInfoGenerators, rig => rig.Generate(encKey, m_random));
+#else
+                DerSet recipientInfos;
+#endif
+                try
+                {
+#if NET35
+                    recipientInfos.Add(rig.Generate(encKey, m_random));
+#else
+                    recipientInfos = DerSet.Map(recipientInfoGenerators, rig => rig.Generate(encKey, m_random));
+#endif
+
+                }
+                catch (InvalidKeyException e)
+                {
+                    throw new CmsException("key inappropriate for algorithm.", e);
+                }
+                catch (GeneralSecurityException e)
+                {
+                    throw new CmsException("error making encrypted content.", e);
+                }
+#if NET35
             }
-            catch (InvalidKeyException e)
-            {
-                throw new CmsException("key inappropriate for algorithm.", e);
-            }
-            catch (GeneralSecurityException e)
-            {
-                throw new CmsException("error making encrypted content.", e);
-            }
+#endif
 
             var eci = new ContentInfo(CmsObjectIdentifiers.Data, encContent);
 
             var contentInfo = new ContentInfo(
                 CmsObjectIdentifiers.AuthenticatedData,
+#if NET35
+                new AuthenticatedData(null, DerSet.FromVector(recipientInfos), macAlgID, null, eci, null, macResult, null));
+#else
                 new AuthenticatedData(null, recipientInfos, macAlgID, null, eci, null, macResult, null));
+#endif
 
             return new CmsAuthenticatedData(contentInfo);
         }

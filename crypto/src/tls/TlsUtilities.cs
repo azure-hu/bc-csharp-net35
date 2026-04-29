@@ -124,11 +124,11 @@ namespace Org.BouncyCastle.Tls
             return result;
         }
 
-        public static readonly byte[] EmptyBytes = Array.Empty<byte>();
-        public static readonly short[] EmptyShorts = Array.Empty<short>();
-        public static readonly int[] EmptyInts = Array.Empty<int>();
-        public static readonly long[] EmptyLongs = Array.Empty<long>();
-        public static readonly string[] EmptyStrings = Array.Empty<string>();
+        public static readonly byte[] EmptyBytes = new byte[0];
+        public static readonly short[] EmptyShorts = new short[0];
+        public static readonly int[] EmptyInts = new int[0];
+        public static readonly long[] EmptyLongs = new long[0];
+        public static readonly string[] EmptyStrings = new string[0];
 
         internal static short MinimumHashStrict = HashAlgorithm.sha1;
         internal static short MinimumHashPreferred = HashAlgorithm.sha256;

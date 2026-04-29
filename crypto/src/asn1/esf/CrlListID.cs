@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Org.BouncyCastle.Asn1.Esf
 {
@@ -52,7 +53,12 @@ namespace Org.BouncyCastle.Asn1.Esf
             if (crls == null)
                 throw new ArgumentNullException(nameof(crls));
 
+#if NET35
+            IEnumerable<Asn1Encodable> tmp_crls = new List<Asn1Encodable>(crls.Select(c => c as Asn1Encodable));
+            m_crls = DerSequence.FromVector(Asn1EncodableVector.FromEnumerable(tmp_crls));
+#else
             m_crls = DerSequence.FromVector(Asn1EncodableVector.FromEnumerable(crls));
+#endif
         }
 
         public CrlListID(IReadOnlyCollection<CrlValidatedID> crls)
@@ -60,7 +66,12 @@ namespace Org.BouncyCastle.Asn1.Esf
             if (crls == null)
                 throw new ArgumentNullException(nameof(crls));
 
+#if NET35
+            IReadOnlyCollection<Asn1Encodable> tmp_crls = new ListEx<Asn1Encodable>(crls.Select(c => c as Asn1Encodable));
+            m_crls = DerSequence.FromCollection(tmp_crls);
+#else
             m_crls = DerSequence.FromCollection(crls);
+#endif
         }
 
         public CrlValidatedID[] GetCrls() => m_crls.MapElements(CrlValidatedID.GetInstance);

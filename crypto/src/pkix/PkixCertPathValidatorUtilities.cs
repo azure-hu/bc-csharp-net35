@@ -868,7 +868,11 @@ namespace Org.BouncyCastle.Pkix
 					var childExpectedPolicies = new HashSet<string>();
 					childExpectedPolicies.Add(policy);
 
-                    var child = new PkixPolicyNode(null, index, childExpectedPolicies, node, pq, policy, false);
+#if NET35
+					var child = new PkixPolicyNode(null, index, new HashSetEx<String>(childExpectedPolicies), node, new HashSetEx<PolicyQualifierInfo>(pq), policy, false);
+#else
+					var child = new PkixPolicyNode(null, index, childExpectedPolicies, node, pq, policy, false);
+#endif
 					node.AddChild(child);
 					policyNodes[index].Add(child);
 
@@ -890,7 +894,11 @@ namespace Org.BouncyCastle.Pkix
                 var _childExpectedPolicies = new HashSet<string>();
                 _childExpectedPolicies.Add(policy);
 
-                var _child = new PkixPolicyNode(null, index, _childExpectedPolicies, anyPolicyNode, _pq, policy, false);
+#if NET35
+				var _child = new PkixPolicyNode(null, index, new HashSetEx<String>(_childExpectedPolicies), anyPolicyNode, new HashSetEx<PolicyQualifierInfo>(_pq), policy, false);
+#else
+				var _child = new PkixPolicyNode(null, index, _childExpectedPolicies, anyPolicyNode, _pq, policy, false);
+#endif
                 anyPolicyNode.AddChild(_child);
                 policyNodes[index].Add(_child);
             }

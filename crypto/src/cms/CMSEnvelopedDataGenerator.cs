@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
-
+using System.Linq;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Cms;
 using Org.BouncyCastle.Asn1.X509;
@@ -81,20 +81,33 @@ namespace Org.BouncyCastle.Cms
                 throw new CmsException("exception decoding algorithm parameters.", e);
             }
 
-            DerSet recipientInfos;
-            try
-            {
-                recipientInfos = DerSet.Map(recipientInfoGenerators, rig => rig.Generate(encKey, m_random));
-            }
-            catch (InvalidKeyException e)
-            {
-                throw new CmsException("key inappropriate for algorithm.", e);
-            }
-            catch (GeneralSecurityException e)
-            {
-                throw new CmsException("error making encrypted content.", e);
-            }
+#if NET35
+			Asn1EncodableVector recipientInfos = new Asn1EncodableVector(recipientInfoGenerators.Count);
 
+            foreach (RecipientInfoGenerator rig in recipientInfoGenerators)
+            {
+#else
+            	DerSet recipientInfos;
+#endif
+            	try
+            	{
+#if NET35
+                    recipientInfos.Add(rig.Generate(encKey, m_random));
+#else
+                	recipientInfos = DerSet.Map(recipientInfoGenerators, rig => rig.Generate(encKey, m_random));
+#endif
+            	}
+            	catch (InvalidKeyException e)
+	            {
+       	        	throw new CmsException("key inappropriate for algorithm.", e);
+        	    }
+            	catch (GeneralSecurityException e)
+            	{
+                	throw new CmsException("error making encrypted content.", e);
+            	}
+#if NET35
+			}
+#endif
             EncryptedContentInfo eci = new EncryptedContentInfo(CmsObjectIdentifiers.Data, encAlgID, encContent);
 
             Asn1Set unprotectedAttrSet = null;
@@ -103,10 +116,19 @@ namespace Org.BouncyCastle.Cms
                 Asn1.Cms.AttributeTable attrTable = unprotectedAttributeGenerator.GetAttributes(
                     new Dictionary<CmsAttributeTableParameter, object>());
 
+#if NET35
+                IReadOnlyCollection<Asn1Encodable> tmp_attrTable = new ListEx<Asn1Encodable>(attrTable.Select(a => a as Asn1Encodable));
+                unprotectedAttrSet = BerSet.FromCollection(tmp_attrTable);
+#else
                 unprotectedAttrSet = BerSet.FromCollection(attrTable);
+#endif
             }
 
+#if NET35
+            var envData = new EnvelopedData(null, DerSet.FromVector(recipientInfos), eci, unprotectedAttrSet);
+#else
             var envData = new EnvelopedData(null, recipientInfos, eci, unprotectedAttrSet);
+#endif
             var contentInfo = new ContentInfo(CmsObjectIdentifiers.EnvelopedData, envData);
             return new CmsEnvelopedData(contentInfo);
         }
@@ -163,19 +185,33 @@ namespace Org.BouncyCastle.Cms
                 throw new CmsException("exception decoding algorithm parameters.", e);
             }
 
-            DerSet recipientInfos;
-            try
+#if NET35
+            Asn1EncodableVector recipientInfos = new Asn1EncodableVector(recipientInfoGenerators.Count);
+
+            foreach (RecipientInfoGenerator rig in recipientInfoGenerators)
             {
-                recipientInfos = DerSet.Map(recipientInfoGenerators, rig => rig.Generate(encKey, m_random));
-            }
-            catch (InvalidKeyException e)
-            {
-                throw new CmsException("key inappropriate for algorithm.", e);
-            }
-            catch (GeneralSecurityException e)
-            {
-                throw new CmsException("error making encrypted content.", e);
-            }
+#else
+     	       DerSet recipientInfos;
+#endif
+        	    try
+            	{
+#if NET35                    
+					recipientInfos.Add(rig.Generate(encKey, m_random));
+#else            		
+                	recipientInfos = DerSet.Map(recipientInfoGenerators, rig => rig.Generate(encKey, m_random));
+#endif
+            	}
+            	catch (InvalidKeyException e)
+            	{
+                	throw new CmsException("key inappropriate for algorithm.", e);
+	            }
+    	        catch (GeneralSecurityException e)
+        	    {
+            	    throw new CmsException("error making encrypted content.", e);
+            	}
+#if NET35
+			}
+#endif
 
             EncryptedContentInfo eci = new EncryptedContentInfo(CmsObjectIdentifiers.Data,
                 (AlgorithmIdentifier)cipherBuilder.AlgorithmDetails, encContent);
@@ -185,11 +221,19 @@ namespace Org.BouncyCastle.Cms
             {
                 Asn1.Cms.AttributeTable attrTable = unprotectedAttributeGenerator.GetAttributes(
                     new Dictionary<CmsAttributeTableParameter, object>());
-
+#if NET35
+                IReadOnlyCollection<Asn1Encodable> tmp_attrTable = new ListEx<Asn1Encodable>(attrTable.Select(a => a as Asn1Encodable));
+                unprotectedAttrs = BerSet.FromCollection(tmp_attrTable);
+#else
                 unprotectedAttrs = BerSet.FromCollection(attrTable);
+#endif
             }
 
+#if NET35
+            var envData = new EnvelopedData(null, DerSet.FromVector(recipientInfos), eci, unprotectedAttrs);
+#else
             var envData = new EnvelopedData(null, recipientInfos, eci, unprotectedAttrs);
+#endif
             var contentInfo = new ContentInfo(CmsObjectIdentifiers.EnvelopedData, envData);
             return new CmsEnvelopedData(contentInfo);
         }

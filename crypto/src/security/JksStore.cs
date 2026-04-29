@@ -422,10 +422,16 @@ namespace Org.BouncyCastle.Security
         private void SaveStream(Stream stream, IDigest checksumDigest)
         {
             var ds = new DigestStream(stream, null, checksumDigest);
+#if NET35
+            var bw = new BinaryWriter(ds, Encoding.UTF8);
+            SaveStreamContents(bw);
+            bw.Close();
+#else
             using (var bw = new BinaryWriter(ds, Encoding.UTF8, leaveOpen: true))
             {
                 SaveStreamContents(bw);
             }
+#endif
 
             byte[] checksum = DigestUtilities.DoFinal(checksumDigest);
             stream.Write(checksum, 0, checksum.Length);

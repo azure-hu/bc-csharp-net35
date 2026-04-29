@@ -55,7 +55,7 @@ namespace Org.BouncyCastle.Crypto.Signers
                 m_engine = GetEngine(m_publicKey.Parameters);
             }
 
-            m_buffer.Init(context: providedContext ?? Array.Empty<byte>());
+            m_buffer.Init(context: providedContext ?? new byte[0]);
         }
 
         public void Update(byte input) => m_buffer.WriteByte(input);

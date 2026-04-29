@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using Org.BouncyCastle.Asn1.X509;
 
 namespace Org.BouncyCastle.Asn1.Esf
@@ -69,11 +69,21 @@ namespace Org.BouncyCastle.Asn1.Esf
             if (certs == null)
                 throw new ArgumentNullException(nameof(certs));
 
+#if NET35
+            IEnumerable<Asn1Encodable> tmp_certs = new List<Asn1Encodable>(policies.Select(c => c as Asn1Encodable));
+            m_certs = DerSequence.FromVector(Asn1EncodableVector.FromEnumerable(tmp_certs));
+#else
             m_certs = DerSequence.FromVector(Asn1EncodableVector.FromEnumerable(certs));
+#endif
 
             if (policies != null)
             {
+#if NET35
+                IEnumerable<Asn1Encodable> tmp_policies = new List<Asn1Encodable>(policies.Select(p => p as Asn1Encodable));
+                m_policies = DerSequence.FromVector(Asn1EncodableVector.FromEnumerable(tmp_policies));
+#else
                 m_policies = DerSequence.FromVector(Asn1EncodableVector.FromEnumerable(policies));
+#endif
             }
         }
 
@@ -83,11 +93,21 @@ namespace Org.BouncyCastle.Asn1.Esf
             if (certs == null)
                 throw new ArgumentNullException(nameof(certs));
 
+#if NET35
+            IReadOnlyCollection<Asn1Encodable> tmp_certs = new ListEx<Asn1Encodable>(certs.Select(c => c as Asn1Encodable));
+            m_certs = DerSequence.FromCollection(tmp_certs);
+#else
             m_certs = DerSequence.FromCollection(certs);
+#endif
 
             if (policies != null)
             {
+#if NET35
+                IReadOnlyCollection<Asn1Encodable> tmp_policies = new ListEx<Asn1Encodable>(policies.Select(p => p as Asn1Encodable));
+                m_policies = DerSequence.FromCollection(tmp_policies);
+#else
                 m_policies = DerSequence.FromCollection(policies);
+#endif
             }
         }
 

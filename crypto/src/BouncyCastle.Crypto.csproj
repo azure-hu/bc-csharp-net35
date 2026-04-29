@@ -13,6 +13,7 @@
     <Company>Legion of the Bouncy Castle Inc.</Company>
     <Copyright>Copyright © Legion of the Bouncy Castle Inc. 2000-2025</Copyright>
     <Description>BouncyCastle.NET is a popular cryptography library for .NET</Description>
+    <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">True</IsAotCompatible>
     <PackageIcon>packageIcon.png</PackageIcon>
     <PackageIconUrl>https://www.bouncycastle.org/stable/nuget/csharp/packageIcon.png</PackageIconUrl>
     <PackageId>BouncyCastle.Cryptography</PackageId>
@@ -93,15 +94,15 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Theraot.Core" Version="3.2.11" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Theraot.Core" Version="3.2.11" />
-    <!--<PackageReference Include="Nerdbank.GitVersioning" Version="3.7.115">
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.7.115">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>-->
+    </PackageReference>
   </ItemGroup>
 
   <Target Name="FixAssemblyAttributes" AfterTargets="GetBuildVersion">

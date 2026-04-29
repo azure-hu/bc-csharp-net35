@@ -207,7 +207,11 @@ namespace Org.BouncyCastle.X509
 
 		private ISet<X509CrlEntry> LoadCrlEntries()
 		{
+#if NET35
+			var entrySet = new HashSetEx<X509CrlEntry>();
+#else
 			var entrySet = new HashSet<X509CrlEntry>();
+#endif
 			var revoked = c.GetRevokedCertificateEnumeration();
 
 			X509Name previousCertificateIssuer = IssuerDN;

@@ -37,7 +37,7 @@ namespace Org.BouncyCastle.Crypto.Signers
         {
             parameters = ParameterUtilities.GetContext(parameters, minLen: 0, maxLen: 255, out var providedContext);
 
-            m_context = providedContext ?? Array.Empty<byte>();
+            m_context = providedContext ?? new byte[0];
 
             if (forSigning)
             {

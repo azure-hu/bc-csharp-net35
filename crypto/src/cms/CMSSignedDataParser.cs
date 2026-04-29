@@ -163,7 +163,11 @@ namespace Org.BouncyCastle.Cms
         {
             get
             {
+#if NET35
+                ISet<string> result = new HashSetEx<string>();
+#else
                 HashSet<string> result = new HashSet<string>();
+#endif
                 foreach (var digestOid in m_digests.Keys)
                 {
                     result.Add(digestOid.GetID());

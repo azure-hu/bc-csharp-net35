@@ -472,8 +472,13 @@ namespace Org.BouncyCastle.Pkix
 									var _newChildExpectedPolicies = new HashSet<string>();
 									_newChildExpectedPolicies.Add(_policy);
 
+#if NET35
+									var _newChild = new PkixPolicyNode(null, i, new HashSetEx<String>(_newChildExpectedPolicies), _node,
+										new HashSetEx<PolicyQualifierInfo>(_apq), _policy, false);
+#else
 									var _newChild = new PkixPolicyNode(null, i, _newChildExpectedPolicies, _node,
 										_apq, _policy, false);
+#endif
 									_node.AddChild(_newChild);
 									policyNodes[i].Add(_newChild);
 								}
@@ -1117,7 +1122,11 @@ namespace Org.BouncyCastle.Pkix
 
 			if (mappings != null)
 			{
+#if NET35
+				var m_idp = new Dictionary<string, HashSetEx<string>>();
+#else
 				var m_idp = new Dictionary<string, HashSet<string>>();
+#endif
 
 				for (int j = 0; j < mappings.Count; j++)
 				{
@@ -1127,7 +1136,11 @@ namespace Org.BouncyCastle.Pkix
 
 					if (!m_idp.TryGetValue(id_p, out var tmp))
 					{
+#if NET35
+						tmp = new HashSetEx<string>();
+#else
                         tmp = new HashSet<string>();
+#endif
                         m_idp.Add(id_p, tmp);
                     }
 
@@ -1230,7 +1243,11 @@ namespace Org.BouncyCastle.Pkix
 					PkixPolicyNode p_node = anyPolicyNode.Parent;
 					if (ANY_POLICY.Equals(p_node.ValidPolicy))
 					{
+#if NET35
+						var c_node = new PkixPolicyNode(null, i, expectedPolicies, p_node, new HashSetEx<PolicyQualifierInfo>(pq), id_p, critical);
+#else
 						var c_node = new PkixPolicyNode(null, i, expectedPolicies, p_node, pq, id_p, critical);
+#endif
 						p_node.AddChild(c_node);
 						policyNodes[i].Add(c_node);
 					}
@@ -1280,7 +1297,11 @@ namespace Org.BouncyCastle.Pkix
                 deltaSet = new HashSet<X509Crl>();
             }
 
-            return new ISet<X509Crl>[]{ completeSet, deltaSet };
+#if NET35
+			return new ISet<X509Crl>[]{ new HashSetEx<X509Crl>(completeSet), new HashSetEx<X509Crl>(deltaSet) };
+#else
+			return new ISet<X509Crl>[]{ completeSet, deltaSet };
+#endif
 		}
 
         internal static HashSet<X509Crl> ProcessCrlA1i(DateTime currentDate, PkixParameters paramsPKIX,

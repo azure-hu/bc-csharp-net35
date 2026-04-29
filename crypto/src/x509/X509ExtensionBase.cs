@@ -17,7 +17,11 @@ namespace Org.BouncyCastle.X509
 			if (extensions == null)
 				return null;
 
+#if NET35
+			var set = new HashSetEx<string>();
+#else
 			var set = new HashSet<string>();
+#endif
 			foreach (DerObjectIdentifier oid in extensions.ExtensionOids)
 			{
 				X509Extension ext = extensions.GetExtension(oid);

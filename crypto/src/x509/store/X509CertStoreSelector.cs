@@ -344,7 +344,11 @@ namespace Org.BouncyCastle.X509.Store
         private static bool ContainsGeneralName(GeneralName[] names, GeneralName name) =>
             Array.IndexOf(names, name) >= 0;
 
+#if NET35
+        private static ISet<T> CopySet<T>(ISet<T> s) => s == null ? null : new HashSetEx<T>(s);
+#else
         private static ISet<T> CopySet<T>(ISet<T> s) => s == null ? null : new HashSet<T>(s);
+#endif
 
         private static bool IssuersMatch(X509Name a, X509Name b) => a == null ? b == null : a.Equivalent(b, true);
 
