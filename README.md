@@ -1,5 +1,10 @@
+# WARNING! This projects is still in WIP state, maybe incomplete and not fully tested, use with caution!
+
+Legion of the Bouncy Castle is not responsible for this unofficial backported project. 
+
+This project depends on [Theraot.Core](https://github.com/theraot/Theraot/), which includes "a backport/polyfill/bridge of recent .NET features to .NET 2.0, .NET Core 1.0, .NET Standard 1.0, among other things".
+
 # The Bouncy Castle Cryptography Library For .NET
-[![NuGet](https://img.shields.io/nuget/dt/BouncyCastle.Cryptography.svg)](https://www.nuget.org/packages/BouncyCastle.Cryptography) [![NuGet](https://img.shields.io/nuget/vpre/BouncyCastle.Cryptography.svg)](https://www.nuget.org/packages/BouncyCastle.Cryptography)
 
 The Bouncy Castle Cryptography library is a .NET implementation of cryptographic algorithms and protocols. It was developed by the Legion of the Bouncy Castle, a registered Australian Charity, with a little help! The Legion, and the latest goings on with this package, can be found at [https://www.bouncycastle.org](https://www.bouncycastle.org).
 
