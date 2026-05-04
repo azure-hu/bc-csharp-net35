@@ -205,7 +205,11 @@ namespace Org.BouncyCastle.Crypto.Tests
             }
             else if (string.Equals("zero_length", contextValue, StringComparison.OrdinalIgnoreCase))
             {
+#if NET35
+                context = new byte[0];
+#else
                 context = Array.Empty<byte>();
+#endif
             }
             else
             {

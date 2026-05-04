@@ -459,7 +459,19 @@ namespace Org.BouncyCastle.Cms
 
             sigGen.AddObject(CalculateVersion(contentTypeOid));
 
+#if NET35
+            Asn1EncodableVector digestAlgsVect = new Asn1EncodableVector(m_messageDigestOids.Count);
+
+            foreach (var messageDigestOid in m_messageDigestOids)
+            {
+                // TODO AlgorithmIdentifier noParams handling (configure an IDigestAlgorithmFinder)
+                digestAlgsVect.Add(new AlgorithmIdentifier(messageDigestOid, DerNull.Instance));
+            }
+
+            DerSet digestAlgs = DerSet.FromVector(digestAlgsVect);
+#else
             DerSet digestAlgs = DerSet.Map(m_messageDigestOids, DigestAlgorithmFinder.Find);
+#endif
 
             digestAlgs.EncodeTo(sigGen.GetRawOutputStream());
 

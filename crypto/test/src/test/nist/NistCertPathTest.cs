@@ -35,12 +35,21 @@ namespace Org.BouncyCastle.Tests.Nist
         internal static readonly DerObjectIdentifier NistTestPolicyOid2 = new DerObjectIdentifier(NIST_TEST_POLICY_2);
         internal static readonly DerObjectIdentifier NistTestPolicyOid3 = new DerObjectIdentifier(NIST_TEST_POLICY_3);
 
-        private static readonly HashSet<string> noPolicies = new HashSet<string>();
+#if NET35
+        private static readonly ISet<string> noPolicies = new HashSetEx<string>();
+        private static readonly ISet<string> anyPolicy = new HashSetEx<string>();
+        private static readonly ISet<string> nistTestPolicy1 = new HashSetEx<string>();
+        private static readonly ISet<string> nistTestPolicy2 = new HashSetEx<string>();
+        private static readonly ISet<string> nistTestPolicy3 = new HashSetEx<string>();
+        private static readonly ISet<string> nistTestPolicy1And2 = new HashSetEx<string>();
+#else
+		private static readonly HashSet<string> noPolicies = new HashSet<string>();
         private static readonly HashSet<string> anyPolicy = new HashSet<string>();
         private static readonly HashSet<string> nistTestPolicy1 = new HashSet<string>();
         private static readonly HashSet<string> nistTestPolicy2 = new HashSet<string>();
         private static readonly HashSet<string> nistTestPolicy3 = new HashSet<string>();
         private static readonly HashSet<string> nistTestPolicy1And2 = new HashSet<string>();
+#endif
 
 		static NistCertPathTest()
 		{
@@ -619,7 +628,11 @@ namespace Org.BouncyCastle.Tests.Nist
 		private PkixCertPathValidatorResult DoTest(string trustAnchor, string[] certs, string[] crls,
 			ISet<string> policies)
 		{
+#if NET35
+			var trustedSet = new HashSetEx<TrustAnchor>();
+#else
 			var trustedSet = new HashSet<TrustAnchor>();
+#endif
 			trustedSet.Add(GetTrustAnchor(trustAnchor));
 
 			var x509Certs = new List<X509Certificate>();
@@ -665,7 +678,11 @@ namespace Org.BouncyCastle.Tests.Nist
 		private PkixCertPathBuilderResult DoBuilderTest(string trustAnchor, string[] certs, string[] crls,
 			ISet<string> initialPolicies, bool policyMappingInhibited, bool anyPolicyInhibited)
 		{
+#if NET35
+			var trustedSet = new HashSetEx<TrustAnchor>();
+#else
 			var trustedSet = new HashSet<TrustAnchor>();
+#endif
 			trustedSet.Add(GetTrustAnchor(trustAnchor));
 
 			var x509Certs = new List<X509Certificate>();

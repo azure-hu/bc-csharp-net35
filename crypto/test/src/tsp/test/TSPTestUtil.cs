@@ -70,7 +70,13 @@ namespace Org.BouncyCastle.Tsp.Tests
         private static readonly Dictionary<string, string> DigestAlgs = new Dictionary<string, string>();
         private static readonly Dictionary<string, string[]> DigestAliases = new Dictionary<string, string[]>();
 
-        private static readonly ISet<string> NoParams = new HashSet<string>();
+        private static readonly ISet<string> NoParams = new
+#if NET35
+            HashSetEx
+#else
+            HashSet
+#endif
+            <string>();
         private static readonly Dictionary<string, string> ECAlgorithms = new Dictionary<string, string>();
 
         private static void AddEntries(DerObjectIdentifier oid, string digest, string encryption)

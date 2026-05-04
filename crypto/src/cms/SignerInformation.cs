@@ -774,8 +774,21 @@ namespace Org.BouncyCastle.Cms
             SignerInformationStore counterSigners)
         {
             // TODO Perform checks from RFC 3852 11.4
+#if NET35
+            Asn1EncodableVector v = new Asn1EncodableVector(1);
+            SignerInfo sInfo = signerInformation.info;
+            var signers = counterSigners.SignersInternal;
+            Asn1EncodableVector sigs = new Asn1EncodableVector(signers.Count);
+            foreach (SignerInformation sigInf in signers)
+            {
+                sigs.Add(sigInf.SignerInfo);
+            }
 
+            v.Add(new Asn1.Cms.Attribute(CmsAttributes.CounterSignature, DerSet.FromVector(sigs)));
+            DerSet attrValues = DerSet.FromVector(v);
+#else
             var attrValues = DerSet.Map(counterSigners.SignersInternal, sigInf => sigInf.SignerInfo);
+#endif
 
             var attributeTable = (signerInformation.UnsignedAttributes ?? DerSet.Empty.ToAttributeTable())
                 .Add(new Asn1.Cms.Attribute(CmsAttributes.CounterSignature, attrValues));

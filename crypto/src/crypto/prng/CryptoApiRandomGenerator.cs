@@ -1,5 +1,8 @@
 using System;
 using System.Security.Cryptography;
+#if NET35
+using System.Reflection;
+#endif
 
 namespace Org.BouncyCastle.Crypto.Prng
 {
@@ -56,11 +59,11 @@ namespace Org.BouncyCastle.Crypto.Prng
             if (start > bytes.Length - len)
                 throw new ArgumentException("Byte array too small for requested offset and length");
 
-            if (bytes.Length == len && start == 0) 
+            if (bytes.Length == len && start == 0)
             {
                 NextBytes(bytes);
             }
-            else 
+            else
             {
                 byte[] tmp = new byte[len];
                 NextBytes(tmp);
@@ -82,7 +85,17 @@ namespace Org.BouncyCastle.Crypto.Prng
 
         public void Dispose()
         {
+#if NET35
+            Type t = m_randomNumberGenerator.GetType();
+
+            InterfaceMapping m = t.GetInterfaceMap(typeof(IDisposable));
+            MethodInfo mi = t.GetMethod("Dispose");
+
+            if (mi == m.TargetMethods[0]) //true
+                (m_randomNumberGenerator as IDisposable)?.Dispose();
+#else
             m_randomNumberGenerator.Dispose();
+#endif
             GC.SuppressFinalize(this);
         }
 

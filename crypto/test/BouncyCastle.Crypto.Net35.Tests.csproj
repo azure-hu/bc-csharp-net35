@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;netcoreapp3.1;net472;net461</TargetFrameworks>
+    <TargetFrameworks>net35</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <SignAssembly>false</SignAssembly>
     <EnableDefaultItems>false</EnableDefaultItems>
@@ -30,16 +30,16 @@
     <EmbeddedResource Include="data\**\*.*" Exclude="**\README.txt" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="NUnit" Version="3.14.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.3.2" />
+    <PackageReference Include="Theraot.Core" Version="3.2.11" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\src\BouncyCastle.Crypto.csproj">
+    <ProjectReference Include="..\src\BouncyCastle.Crypto.Net35.csproj">
       <SetTargetFramework Condition="'$(TargetFramework)' == 'net472'">TargetFramework=netstandard2.0</SetTargetFramework>
     </ProjectReference>
   </ItemGroup>

@@ -168,10 +168,10 @@ namespace Org.BouncyCastle.Utilities.Test
             File.OpenRead(Path.Combine(GetTestDataPath(), path));
 
         internal static Stream FindTestResource(string path1, string path2) =>
-            File.OpenRead(Path.Combine(GetTestDataPath(), path1, path2));
+            File.OpenRead(Path.Combine(Path.Combine(GetTestDataPath(), path1), path2));
 
         internal static Stream FindTestResource(string path1, string path2, string path3) =>
-            File.OpenRead(Path.Combine(GetTestDataPath(), path1, path2, path3));
+            File.OpenRead(Path.Combine(Path.Combine(Path.Combine(GetTestDataPath(), path1), path2), path3));
 
         private static string GetTestDataPath() => EnsureSingletonInitialized(ref m_testDataPath, FindTestDataPath);
     }

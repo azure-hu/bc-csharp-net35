@@ -96,17 +96,33 @@ namespace Org.BouncyCastle.Ocsp
 		private OcspReq GenerateRequest(DerObjectIdentifier signingAlgorithm, AsymmetricKeyParameter privateKey,
 			X509Certificate[] chain, SecureRandom random)
 		{
-			DerSequence requests;
-			try
+#if NET35
+			Asn1EncodableVector requests = new Asn1EncodableVector(list.Count);
+
+			foreach (RequestObject reqObj in list)
 			{
-				requests = DerSequence.Map(list, requestObject => requestObject.ToRequest());
-			}
-			catch (Exception e)
-			{
-				throw new OcspException("exception creating Request", e);
+#else
+				DerSequence requests;
+#endif
+				try
+				{
+#if NET35					
+					requests.Add(reqObj.ToRequest());
+#else
+					requests = DerSequence.Map(list, requestObject => requestObject.ToRequest());
+#endif
+				}
+				catch (Exception e)
+				{
+					throw new OcspException("exception creating Request", e);
+				}
 			}
 
+#if NET35
+			TbsRequest tbsReq = new TbsRequest(requestorName, new DerSequence(requests), requestExtensions);
+#else
 			TbsRequest tbsReq = new TbsRequest(requestorName, requests, requestExtensions);
+#endif
 			Signature signature = null;
 
 			if (signingAlgorithm != null)

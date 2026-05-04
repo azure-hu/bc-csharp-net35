@@ -425,7 +425,6 @@ namespace Org.BouncyCastle.Security
 #if NET35
             var bw = new BinaryWriter(ds, Encoding.UTF8);
             SaveStreamContents(bw);
-            bw.Close();
 #else
             using (var bw = new BinaryWriter(ds, Encoding.UTF8, leaveOpen: true))
             {
@@ -435,6 +434,10 @@ namespace Org.BouncyCastle.Security
 
             byte[] checksum = DigestUtilities.DoFinal(checksumDigest);
             stream.Write(checksum, 0, checksum.Length);
+#if NET35
+
+            bw.Close();
+#endif
         }
 
         private void SaveStreamContents(BinaryWriter bw)

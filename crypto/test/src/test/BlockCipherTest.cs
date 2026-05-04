@@ -24,7 +24,13 @@ namespace Org.BouncyCastle.Tests
         : SimpleTest
     {
         private static readonly ISet<string> ValidModes =
-            new HashSet<string>(){ "CBC", "CCM", "CFB", "CTR", "CTS", "EAX", "ECB", "GCM", "OCB", "OFB" };
+            new
+#if NET35
+            HashSetEx
+#else
+            HashSet
+#endif
+            <string>(){ "CBC", "CCM", "CFB", "CTR", "CTS", "EAX", "ECB", "GCM", "OCB", "OFB" };
 
         private static readonly string[] cipherTests1 =
         {

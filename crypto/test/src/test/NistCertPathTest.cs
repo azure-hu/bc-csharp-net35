@@ -42,21 +42,57 @@ namespace Org.BouncyCastle.Tests
 
 		static NistCertPathTest()
 		{
-			ANY = new HashSet<string>();
+			ANY = new
+#if NET35
+			HashSetEx
+#else
+            HashSet
+#endif
+			<string>();
 
-			TP1 = new HashSet<string>();
+			TP1 = new
+#if NET35
+			HashSetEx
+#else
+            HashSet
+#endif
+			<string>();
 			TP1.Add(TEST_POLICY_1);
 
-			TP2 = new HashSet<string>();
+			TP2 = new
+#if NET35
+			HashSetEx
+#else
+            HashSet
+#endif
+			<string>();
 			TP2.Add(TEST_POLICY_2);
 
-			TP3 = new HashSet<string>();
+			TP3 = new
+#if NET35
+			HashSetEx
+#else
+            HashSet
+#endif
+			<string>();
 			TP3.Add(TEST_POLICY_3);
 
-			TP4 = new HashSet<string>();
+			TP4 = new
+#if NET35
+			HashSetEx
+#else
+            HashSet
+#endif
+			<string>();
 			TP4.Add(TEST_POLICY_4);
 
-			TP1_TP2 = new HashSet<string>();
+			TP1_TP2 = new
+#if NET35
+			HashSetEx
+#else
+            HashSet
+#endif
+			<string>();
 			TP1_TP2.Add(TEST_POLICY_1);
 			TP1_TP2.Add(TEST_POLICY_2);
 		}
@@ -256,7 +292,11 @@ namespace Org.BouncyCastle.Tests
 			{
 				trustedCert = certParser.ReadCertificate(Base64.Decode(Trust_Anchor_CP_01_01_crt));
 				trustedCRL = crlParser.ReadCrl(Base64.Decode(Trust_Anchor_CRL_CP_01_01_crl));
+#if NET35
+				trustedSet = new HashSetEx<TrustAnchor>();
+#else
 				trustedSet = new HashSet<TrustAnchor>();
+#endif
 
 				byte[] _ncBytes = null;
 				Asn1OctetString _oct = trustedCert.GetExtensionValue(X509Extensions.NameConstraints);

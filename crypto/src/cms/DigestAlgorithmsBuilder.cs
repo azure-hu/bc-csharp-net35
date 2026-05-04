@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Operators.Utilities;
@@ -48,7 +48,16 @@ namespace Org.BouncyCastle.Cms
             }
         }
 
+#if NET35
+        internal Asn1Set Build(bool useDL)
+        {
+            IReadOnlyCollection<Asn1Encodable> tmp_ordered = new ListEx<Asn1Encodable>(m_ordered.Select(o => o as Asn1Encodable));
+            return tmp_ordered.ToAsn1Set(useDer: false, useDL);
+        }
+#else
+
         internal Asn1Set Build(bool useDL) => m_ordered.ToAsn1Set(useDer: false, useDL);
+#endif
 
         internal bool Contains(AlgorithmIdentifier algID) => m_unique.Contains(new UniqueAlgID(algID));
 

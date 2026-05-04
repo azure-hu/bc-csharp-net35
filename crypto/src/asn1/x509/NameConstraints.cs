@@ -105,12 +105,24 @@ namespace Org.BouncyCastle.Asn1.X509
             }
         }
 
+        private static DerSequence CreateSequence(IReadOnlyCollection<GeneralSubtree> subtrees)
+        {
+            if (subtrees == null)
+                return null;
+            else
+            {
+                IReadOnlyCollection<Asn1Encodable> tmp_subtrees = new ListEx<Asn1Encodable>(subtrees.Select(st => st as Asn1Encodable));
+                return DerSequence.FromCollection(tmp_subtrees);
+            }
+        }
+
 #else
         private static DerSequence CreateSequence(IList<GeneralSubtree> subtrees) =>
             subtrees == null ? null : DerSequence.FromVector(Asn1EncodableVector.FromEnumerable(subtrees));
-
-#endif
+            
         private static DerSequence CreateSequence(IReadOnlyCollection<GeneralSubtree> subtrees) =>
             subtrees == null ? null : DerSequence.FromCollection(subtrees);
+
+#endif
     }
 }

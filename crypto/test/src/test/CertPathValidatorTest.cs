@@ -157,7 +157,11 @@ namespace Org.BouncyCastle.Tests
             certchain.Add(interCert);
 
             PkixCertPath cp = new PkixCertPath(certchain);
+#if NET35
+            var trust = new HashSetEx<TrustAnchor>();
+#else
             var trust = new HashSet<TrustAnchor>();
+#endif
             trust.Add(new TrustAnchor(rootCert, null));
 
             PkixCertPathValidator cpv = new PkixCertPathValidator();
@@ -176,7 +180,7 @@ namespace Org.BouncyCastle.Tests
             {
                 Fail("checker not evaluated for each certificate");
             }
-            
+
             if (!subjectPublicKey.Equals(finalCert.GetPublicKey()))
             {
                 Fail("wrong public key returned");
@@ -231,7 +235,11 @@ namespace Org.BouncyCastle.Tests
                 certchain.Add(interCert);
 
                 cp = new PkixCertPath(certchain);
+#if NET35
+                trust = new HashSetEx<TrustAnchor>();
+#else
                 trust = new HashSet<TrustAnchor>();
+#endif
                 trust.Add(new TrustAnchor(rootCert, null));
 
                 cpv = new PkixCertPathValidator();
@@ -248,7 +256,7 @@ namespace Org.BouncyCastle.Tests
             }
             catch (Exception e)
             {
-                if (e is PkixCertPathValidatorException 
+                if (e is PkixCertPathValidatorException
                     && e.Message.StartsWith("Could not validate certificate signature."))
                 {
                     return;

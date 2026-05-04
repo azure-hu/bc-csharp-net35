@@ -84,7 +84,11 @@ namespace Org.BouncyCastle.Tests
 		private string TestPolicies(int index, X509Certificate trustCert, X509Certificate intCert,
 			X509Certificate endCert, ISet<string> requirePolicies, bool okay)
 		{
-			var trust = new HashSet<TrustAnchor>();
+#if NET35
+			var trust = new HashSetEx<TrustAnchor>();
+#else
+            var trust = new HashSet<TrustAnchor>();
+#endif
 			trust.Add(new TrustAnchor(trustCert, null));
 			X509CertStoreSelector targetConstraintsCert = new X509CertStoreSelector();
 			targetConstraintsCert.Subject = endCert.SubjectDN;
@@ -247,7 +251,12 @@ namespace Org.BouncyCastle.Tests
 			policies.Add(new PolicyInformation(Nist.NistCertPathTest.NistTestPolicyOid2));
 			endCert = CreateEndEntityCert(pubKey, intPrivKey, intPubKey, policies);
 
+
+#if NET35
+			requirePolicies = new HashSetEx<string>();
+#else
 			requirePolicies = new HashSet<string>();
+#endif
 			requirePolicies.Add(Nist.NistCertPathTest.NistTestPolicyOid1.GetID());
 			msg = TestPolicies(1, trustCert, intCert, endCert, requirePolicies, true);
 			CheckMessage(1, msg, "");
@@ -263,7 +272,12 @@ namespace Org.BouncyCastle.Tests
 			policies.Add(new PolicyInformation(Nist.NistCertPathTest.NistTestPolicyOid2));
 			endCert = CreateEndEntityCert(pubKey, intPrivKey, intPubKey, policies);
 
+
+#if NET35
+			requirePolicies = new HashSetEx<string>();
+#else
 			requirePolicies = new HashSet<string>();
+#endif
 			requirePolicies.Add("2.5.29.32.0");
 			msg = TestPolicies(2, trustCert, intCert, endCert, requirePolicies, true);
 			CheckMessage(2, msg, "");
@@ -280,7 +294,12 @@ namespace Org.BouncyCastle.Tests
 			policies.Add(new PolicyInformation(Nist.NistCertPathTest.NistTestPolicyOid2));
 			endCert = CreateEndEntityCert(pubKey, intPrivKey, intPubKey, policies);
 
+
+#if NET35
+			requirePolicies = new HashSetEx<string>();
+#else
 			requirePolicies = new HashSet<string>();
+#endif
 			requirePolicies.Add("2.16.840.1.101.3.2.1.48.1");
 			msg = TestPolicies(3, trustCert, intCert, endCert, requirePolicies, true);
 			CheckMessage(3, msg, "");
@@ -297,7 +316,12 @@ namespace Org.BouncyCastle.Tests
 			policies.Add(new PolicyInformation(Nist.NistCertPathTest.NistTestPolicyOid3));
 			endCert = CreateEndEntityCert(pubKey, intPrivKey, intPubKey, policies);
 
+
+#if NET35
+			requirePolicies = new HashSetEx<string>();
+#else
 			requirePolicies = new HashSet<string>();
+#endif
 			requirePolicies.Add("2.16.840.1.101.3.2.1.48.3");
 			msg = TestPolicies(4, trustCert, intCert, endCert, requirePolicies, true);
 			CheckMessage(4, msg, "");
@@ -313,7 +337,11 @@ namespace Org.BouncyCastle.Tests
 			policies.Add(new PolicyInformation(Nist.NistCertPathTest.NistTestPolicyOid2));
 			endCert = CreateEndEntityCert(pubKey, intPrivKey, intPubKey, policies);
 
+#if NET35
+			requirePolicies = new HashSetEx<string>();
+#else
 			requirePolicies = new HashSet<string>();
+#endif
 			requirePolicies.Add("2.16.840.1.101.3.2.1.48.2");
 			msg = TestPolicies(5, trustCert, intCert, endCert, requirePolicies, false);
 			CheckMessage(5, msg, "Path processing failed on policy.");
@@ -329,7 +357,11 @@ namespace Org.BouncyCastle.Tests
 			policies.Add(new PolicyInformation(Nist.NistCertPathTest.NistTestPolicyOid1));
 			endCert = CreateEndEntityCert(pubKey, intPrivKey, intPubKey, policies);
 
+#if NET35
+			requirePolicies = new HashSetEx<string>();
+#else
 			requirePolicies = new HashSet<string>();
+#endif
 			requirePolicies.Add("2.16.840.1.101.3.2.1.48.1");
 			msg = TestPolicies(6, trustCert, intCert, endCert, requirePolicies, true);
 			CheckMessage(6, msg, "");
@@ -345,7 +377,12 @@ namespace Org.BouncyCastle.Tests
 			policies.Add(new PolicyInformation(Nist.NistCertPathTest.NistTestPolicyOid2));
 			endCert = CreateEndEntityCert(pubKey, intPrivKey, intPubKey, policies);
 
+
+#if NET35
+			requirePolicies = new HashSetEx<string>();
+#else
 			requirePolicies = new HashSet<string>();
+#endif
 			requirePolicies.Add("2.16.840.1.101.3.2.1.48.3");
 			msg = TestPolicies(7, trustCert, intCert, endCert, requirePolicies, false);
 			CheckMessage(7, msg, "Path processing failed on policy.");
@@ -361,7 +398,11 @@ namespace Org.BouncyCastle.Tests
 			policies.Add(new PolicyInformation(Nist.NistCertPathTest.NistTestPolicyOid3));
 			endCert = CreateEndEntityCert(pubKey, intPrivKey, intPubKey, policies);
 
+#if NET35
+			requirePolicies = new HashSetEx<string>();
+#else
 			requirePolicies = new HashSet<string>();
+#endif
 			requirePolicies.Add("2.16.840.1.101.3.2.1.48.1");
 			msg = TestPolicies(8, trustCert, intCert, endCert, requirePolicies, false);
 			CheckMessage(8, msg, "Path processing failed on policy.");
