@@ -4,6 +4,12 @@ Legion of the Bouncy Castle is not responsible for this unofficial backported pr
 
 This project depends on [Theraot.Core](https://github.com/theraot/Theraot/), which includes "a backport/polyfill/bridge of recent .NET features to .NET 2.0, .NET Core 1.0, .NET Standard 1.0, among other things".
 
+Tests also had been backported, failed tests' results can be found in [failed-tests.md](https://github.com/azure-hu/bc-csharp-net35/blob/2.6.2-net35/failed-tests.md) file.
+
+Below you can find the original contents of README.md.
+
+---
+
 # The Bouncy Castle Cryptography Library For .NET
 
 The Bouncy Castle Cryptography library is a .NET implementation of cryptographic algorithms and protocols. It was developed by the Legion of the Bouncy Castle, a registered Australian Charity, with a little help! The Legion, and the latest goings on with this package, can be found at [https://www.bouncycastle.org](https://www.bouncycastle.org).
